@@ -1,0 +1,1 @@
+# plugins-booking-activities
