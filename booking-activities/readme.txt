@@ -2,8 +2,8 @@
 Contributors: bookingactivities, yoancutillas
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7EKU434L7NEVC
 Tags: booking, reservation, booking form, woocommerce booking, booking events
-Tested up to: 6.8
-Stable tag: 1.16.44
+Tested up to: 6.9
+Stable tag: 1.16.47
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -107,6 +107,7 @@ See the whole [features list here](https://booking-activities.fr/en/documentatio
 * **[Prices and Credits](https://booking-activities.fr/en/downloads/prices-and-credits/?utm_source=wp-plugin-page&utm_medium=wordpress&utm_campaign=prices-and-credits&utm_content=readme)**: Set per event prices, decreasing prices, price categories (adults, children, etc.), pay with credits
 * **[Notification Pack](https://booking-activities.fr/en/downloads/notification-pack/?utm_source=wp-plugin-page&utm_medium=wordpress&utm_campaign=notification-pack&utm_content=readme)**: Send activity-specific notifications and booking reminders by email, SMS and Push
 * **[Order for Customers](https://booking-activities.fr/en/downloads/order-for-customers/?utm_source=wp-plugin-page&utm_medium=wordpress&utm_campaign=order-for-customers&utm_content=readme)**: You can book / place an order in the name of your customers
+* **[Waiting List](https://booking-activities.fr/en/downloads/waiting-list/?utm_source=wp-plugin-page&utm_medium=wordpress&utm_campaign=waiting-list&utm_content=readme)**: Join the waiting list for sold-out events (automatic notification / booking)
 
 See the whole [add-ons list here](https://booking-activities.fr/en/add-ons/?utm_source=wp-plugin-page&utm_medium=wordpress&utm_content=readme)
 
@@ -319,6 +320,52 @@ If you don't receive a reply within 48h by email, a technical problem has probab
 
 
 == Changelog ==
+
+= 1.16.47 - 2026/01/27 =
+* Fix - Prevent unbinding repeated (group of) event(s) occurrences if the result would be identical to the original
+* Fix - Incorrect grouped events after unbinding booked occurrences if the result is a non repeated group
+* Fix - WC variable product booking form was not pre-filled after redirecting from another form
+* Fix - Custom fields may be empty after duplicating a booking form
+
+= 1.16.46 - 2025/12/09 =
+* Tweak - The [Waiting List](https://booking-activities.fr/en/downloads/waiting-list/?utm_source=wp-plugin-page&utm_medium=wordpress&utm_content=readme) add-on is now available!
+* Fix - Fix qTranslateConfig deprecation notice with qTranslateXT 1.16
+* Fix - Fix escaping errors
+
+= 1.16.45 - 2025/12/02 =
+* Tweak - Compatibility with Waiting List add-on 1.0.0
+* Tweak - Add customer avatar column to user booking list (customer_avatar) and backend booking list
+* Tweak - Remove hint on duration field as it may be misleading
+* Tweak - Hide bullet point followed by colon in WC item meta
+* Tweak - Remove "Password required" option from "User data (login / registration)" field settings
+* Tweak - Allow empty values for title, label, tooltip, placeholder, options and value fields in form fields settings
+* Fix - Admnistrators could not reschedule to a past event from admin if "Administrators can reschedule bookings to" option was set to "Same form"
+* Fix - Booking dialogs may not appear on block based sites
+* Fix - Columns order may not be taken into account with select2 4.0.13
+* Fix - Call woocommerce_coupon_is_valid hook in try catch to improve compatibility
+* Fix - Do not allow dialogs content to overflow after resizing
+* Fix - Prevent payment for orders with bookings whose status is not valid
+* Dev - Add "expired" booking filter (can only be used programmatically)
+* Dev - Make "from", "to", "end_from", "end_to", "created_from" and "created_to" booking filters work when retrieving booking groups as well
+* Dev - Allow boolean value for "booking_group_id" booking filter to retrieve only (non) grouped bookings (can only be used programmatically)
+* Dev - Remove bookacti_booking_list_displayed_status hook, use bookacti_user_booking_list_default_statuses instead
+* Dev - Remove bookacti_change_booking_status_options hook, use bookacti_change_booking_status_dialog_booking_status_fields instead
+* Dev - Remove bookacti_new_booking_notification_args hooks, use bookacti_booking_status_change_notification_args instead
+* Dev - Remove bookacti_send_booking_group_status_change_notification function, use bookacti_send_booking_status_change_notification instead
+* Dev - Remove bookacti_booking_group_status_change_notification_* hooks, use bookacti_booking_status_change_notification_* instead
+* Dev - Refactor bookacti_send_booking_status_change_notification function and bookacti_booking_status_change_notification_* hooks parameters to handle both single and group bookings
+* Dev - Add bookacti_booking_quantity_updated and bookacti_booking_status_changed hooks on every WC actions that affects booking quantity or status
+* Dev - Add context in $args parameter of bookacti_booking_quantity_updated, bookacti_booking_group_quantity_updated, bookacti_booking_status_changed and bookacti_booking_group_status_changed hooks
+* Dev - Refactor all parameters of bookacti_booking_payment_status_changed and bookacti_booking_group_payment_status_changed hooks
+* Dev - Refactor all parameters of bookacti_booking_quantity_updated and bookacti_booking_group_quantity_updated hooks
+* Dev - Refactor all parameters of bookacti_event_updated hook
+* Dev - Replace first parameter of bookacti_activity_updated and bookacti_group_category_updated hooks
+* Dev - Refactor parameters of bookacti_is_booking_in_delay function and hook
+* Dev - Refactor parameters of bookacti_bypass_booking_changes_deadline hook
+* Dev - Improve compatibility with "button" type submit, and not only "input" type submit
+* Dev - Add a secret key to process async notifications via URL
+* Dev - Add PHP hooks in calendar editor dialogs, refactor some code to standardize everything
+* Dev - Clean session data on woocommerce_cart_emptied as recommended in WC 10.3
 
 = 1.16.44 - 2025/09/03 =
 * Fix - Product selectboxes may remain empty in booking form calendar settings
@@ -620,6 +667,11 @@ If you don't receive a reply within 48h by email, a technical problem has probab
 
 
 == Upgrade Notice ==
+
+= 1.16.45 =
+Major changes in code:
+* If you have purchased add-ons, you need to update them too.
+* If you have custom code, you may need to adapt it. No support can be provided for your custom code.
 
 = 1.15.8 =
 Requires MySQL 5.7.22 or later, or MariaDB 10.5.4 or later

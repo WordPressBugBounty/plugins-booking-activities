@@ -2,7 +2,7 @@
 /**
  * Form editor dialogs
  * @since 1.5.0
- * @version 1.15.19
+ * @version 1.16.46
  */
 
 // Exit if accessed directly
@@ -329,7 +329,7 @@ foreach( $fields_default as $field_name => $field_data ) {
 		/**
 		 * Display the content of the "Availability" tab of the "Calendar" dialog
 		 * @since 1.5.0
-		 * @version 1.13.0
+		 * @version 1.15.46
 		 * @param array $params
 		 */
 		function bookacti_fill_calendar_dialog_availability_tab( $params ) {
@@ -370,12 +370,14 @@ foreach( $fields_default as $field_name => $field_data ) {
 		</fieldset>
 		<?php 
 			do_action( 'bookacti_calendar_dialog_availability_tab_after', $params );
-		} 
+		
+			bookacti_display_bawl_promo();
+		}
 		
 		/**
 		 * Display the content of the "Calendar" tab of the "Calendar" dialog
 		 * @since 1.5.0
-		 * @version 1.15.0
+		 * @version 1.16.46
 		 * @param array $params
 		 */
 		function bookacti_fill_calendar_dialog_calendar_tab( $params ) {
@@ -390,11 +392,11 @@ foreach( $fields_default as $field_name => $field_data ) {
 		</fieldset>
 		<?php 
 			do_action( 'bookacti_calendar_dialog_calendar_tab_after', $params );
-		} 
+		
+			bookacti_display_badp_promo();
+		}
 		?>
-		<div class='bookacti-hidden-field'>
-			<?php bookacti_display_badp_promo(); ?>
-		</div>
+		
 		<div class='bookacti-show-hide-advanced-options bookacti-show-advanced-options' 
 			 data-show-title='<?php esc_html_e( 'Show advanced options', 'booking-activities' ); ?>'
 			 data-hide-title='<?php esc_html_e( 'Hide advanced options', 'booking-activities' ); ?>'>
@@ -660,7 +662,7 @@ foreach( $fields_default as $field_name => $field_data ) {
 		/**
 		 * Get the login types edit fields HTML
 		 * @since 1.6.0
-		 * @version 1.14.0
+		 * @version 1.16.45
 		 * @param array $keys
 		 * @return string
 		 */
@@ -844,19 +846,6 @@ foreach( $fields_default as $field_name => $field_data ) {
 					?>
 				</div>
 			</fieldset>
-			<div>
-				<label for='bookacti-password-required'><?php esc_html_e( 'Password required', 'booking-activities' ); ?></label>
-				<?php 
-					$args = array(
-						'type'  => 'checkbox',
-						'name'  => 'required_fields[password]',
-						'id'    => 'bookacti-required_fields-password',
-						'value' => 1,
-						'tip'   => esc_html__( 'Disable this option to allow your customers to book without password authentication. They will simply have to give their e-mail address for the reservation to be made on their account. Becareful, anyone will be able to book on someone else\'s behalf with his email address only.', 'booking-activities' )
-					);
-					bookacti_display_field( $args );
-				?>
-			</div>
 			<div>
 				<label for='bookacti-automatic-login'><?php esc_html_e( 'Automatic login', 'booking-activities' ); ?></label>
 				<?php 
@@ -1243,7 +1232,7 @@ foreach( $fields_default as $field_name => $field_data ) {
 			<p><strong><?php esc_html_e( 'Secret address in iCal format', 'booking-activities' ); ?></strong></p>
 			<div class='bookacti_export_url'>
 				<div class='bookacti_export_url_field'><input type='text' id='bookacti_export_events_url_secret' data-value='<?php echo $ical_url; ?>' value='<?php echo $ical_url; ?>' readonly onfocus='this.select();'/></div>
-				<div class='bookacti_export_button'><input type='button' value='<?php esc_html( _ex( 'Export', 'action', 'booking-activities' ) ); ?>' class='button button-primary button-large'/></div>
+				<div class='bookacti_export_button'><input type='button' value='<?php echo esc_attr_x( 'Export', 'action', 'booking-activities' ); ?>' class='button button-primary button-large'/></div>
 			</div>
 			<p>
 				<small>

@@ -633,7 +633,7 @@ function bookacti_get_active_add_ons( $prefix = '', $exclude = array( 'balau' ) 
 /**
  * Get add-on data by prefix
  * @since 1.7.14
- * @version 1.16.42
+ * @version 1.16.45
  * @param string $prefix
  * @param array $exclude
  * @return array
@@ -646,7 +646,7 @@ function bookacti_get_add_ons_data( $prefix = '', $exclude = array( 'balau' ) ) 
 			'plugin_name' => 'ba-display-pack', 
 			'end_of_life' => '', 
 			'download_id' => 482,
-			'min_version' => '1.5.9'
+			'min_version' => '1.5.12'
 		),
 		'banp' => array( 
 			'title'       => 'Notification Pack', 
@@ -654,7 +654,7 @@ function bookacti_get_add_ons_data( $prefix = '', $exclude = array( 'balau' ) ) 
 			'plugin_name' => 'ba-notification-pack', 
 			'end_of_life' => '', 
 			'download_id' => 1393,
-			'min_version' => '1.3.3'
+			'min_version' => '1.3.12'
 		),
 		'bapap' => array( 
 			'title'       => 'Prices and Credits', 
@@ -662,7 +662,7 @@ function bookacti_get_add_ons_data( $prefix = '', $exclude = array( 'balau' ) ) 
 			'plugin_name' => 'ba-prices-and-credits', 
 			'end_of_life' => '', 
 			'download_id' => 438,
-			'min_version' => '1.8.29'
+			'min_version' => '1.8.32'
 		),
 		'baaf' => array( 
 			'title'       => 'Advanced Forms', 
@@ -670,7 +670,7 @@ function bookacti_get_add_ons_data( $prefix = '', $exclude = array( 'balau' ) ) 
 			'plugin_name' => 'ba-advanced-forms', 
 			'end_of_life' => '', 
 			'download_id' => 2705,
-			'min_version' => '1.5.6'
+			'min_version' => '1.5.7'
 		),
 		'baofc' => array( 
 			'title'	      => 'Order for Customers', 
@@ -678,7 +678,7 @@ function bookacti_get_add_ons_data( $prefix = '', $exclude = array( 'balau' ) ) 
 			'plugin_name' => 'ba-order-for-customers', 
 			'end_of_life' => '', 
 			'download_id' => 436,
-			'min_version' => '1.3.6'
+			'min_version' => '1.3.7'
 		),
 		'bara' => array( 
 			'title'       => 'Resource Availability', 
@@ -686,7 +686,15 @@ function bookacti_get_add_ons_data( $prefix = '', $exclude = array( 'balau' ) ) 
 			'plugin_name' => 'ba-resource-availability', 
 			'end_of_life' => '', 
 			'download_id' => 29249,
-			'min_version' => '1.2.3'
+			'min_version' => '1.2.4'
+		),
+		'bawl' => array( 
+			'title'       => 'Waiting List', 
+			'slug'        => 'waiting-list', 
+			'plugin_name' => 'ba-waiting-list', 
+			'end_of_life' => '', 
+			'download_id' => 39100,
+			'min_version' => '1.0.0'
 		),
 		'balau' => array( 
 			'title'       => 'Licenses & Updates', 
@@ -1813,7 +1821,7 @@ function bookacti_get_loading_html() {
 // BLOCK
 
 /**
- * Return the first occurence of a parsed block recursively
+ * Return the first occurrence of a parsed block recursively
  * @since 1.16.5
  * @param array $parsed_block
  * @param string $block_name
@@ -2350,7 +2358,7 @@ function bookacti_format_datetime( $datetime, $format = '' ) {
 
 /**
  * Check if a string is in a correct datetime format
- * @version 1.15.6
+ * @version 1.16.46
  * @param string $datetime Date format "Y-m-d H:i:s" is expected
  * @return string
  */
@@ -2358,7 +2366,7 @@ function bookacti_sanitize_datetime( $datetime ) {
 	if( preg_match( '/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/', $datetime ) 
 	||  preg_match( '/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]) ([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/', $datetime ) ) {
 		$datetime_object = new DateTime( $datetime );
-		return $datetime;
+		return $datetime_object->format( 'Y-m-d H:i:s' );
 	}
 	return '';
 }

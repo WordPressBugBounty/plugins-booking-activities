@@ -77,7 +77,7 @@ $j( document ).ready( function() {
 	/**
 	 * Convert duration from days/hours/minutes to seconds - on change
 	 * @since 1.8.0
-	 * @version 1.15.8
+	 * @version 1.16.45
 	 */
 	$j( 'body' ).on( 'keyup mouseup change', '.bookacti-duration-field', function() {
 		var field_value = $j( this ).closest( '.bookacti-duration-field-container' ).siblings( '.bookacti-duration-value' );
@@ -92,12 +92,6 @@ $j( document ).ready( function() {
 			if( $j.isNumeric( days ) )    { value += parseInt( days ) * 86400; }
 		}
 		field_value.val( value ).trigger( 'change' );
-		
-		// Display an hint below avilability period fields to help setting the appropriate value - on change
-		$j( this ).closest( '.bookacti-duration-field-container' ).siblings( '.bookacti-duration-hint' ).remove();
-		if( ! $j.isNumeric( value ) ) { value = 0; }
-		var hint = moment.utc().add( value + bookacti_localized.utc_offset, 's' ).formatPHP( bookacti_localized.date_format_long );
-		$j( this ).closest( '.bookacti-duration-field-container' ).parent().find( '.bookacti-duration-field-container' ).last().after( '<div class="bookacti-duration-hint">' + hint + '</div>' );
 	});
 	
 	
@@ -548,17 +542,18 @@ function bookacti_show_hide_template_related_options( template_ids, options ) {
 
 /**
  * Update multilangual fields with qTranslate-XT
+ * @version 1.16.46
  * @param {HTMLElement} field
  */
-function bookacti_update_qtx_field( field ){
-	if( typeof qTranslateConfig !== 'undefined' ) {
-		var qtx         = qTranslateConfig.js.get_qtx();
-		var active_lang = qtx.getActiveLanguage();
-		var input_name  = $j( field ).attr( 'name' );
+function bookacti_update_qtx_field( field ) {
+	var qtx = typeof qTranx !== 'undefined' ? qTranx?.hooks : ( typeof qTranslateConfig !== 'undefined' ? qTranslateConfig?.js.get_qtx?.() : null );
+	if( ! qtx ) { return; }
+	
+	var active_lang = qtx.getActiveLanguage();
+	var input_name  = $j( field ).attr( 'name' );
 
-		if( active_lang !== undefined ) {
-			$j( 'input[name="qtranslate-fields[' + input_name + '][' + active_lang + ']"]' ).val( $j( field ).val() );
-		}
+	if( active_lang !== undefined ) {
+		$j( 'input[name="qtranslate-fields[' + input_name + '][' + active_lang + ']"]' ).val( $j( field ).val() );
 	}
 }
 
@@ -566,22 +561,23 @@ function bookacti_update_qtx_field( field ){
 /**
  * Refresh multilingual field to make a correct display 
  * E.g.: '[:en]Hello[:fr]Bonjour[:]' become 'Hello' and 'Bonjour' each in its own switchable field (with the LSB)
+ * @version 1.16.46
  * @param {HTMLElement} field
  */
-function bookacti_refresh_qtx_field( field ){
-	if( typeof qTranslateConfig !== 'undefined' ) {
-		var qtx = qTranslateConfig.js.get_qtx();
-		$j( field ).removeClass('qtranxs-translatable');
-		var h = qtx.refreshContentHook( field );
-		$j( field ).addClass('qtranxs-translatable');
-		
-		// Refresh tinyMCE (from "qtranslate-xt\admin\js\common.js" updateTinyMCE line 588)
-		if( typeof tinyMCE !== 'undefined' ) {
-			if( tinyMCE && $j( '#' + field.id ).hasClass( 'wp-editor-area' ) ) {
-				if( tinyMCE.get( field.id ) ) {
-					h.mce = tinyMCE.get( field.id );
-					h.mce.setContent( h.contentField.value, { format: 'html' } );
-				}
+function bookacti_refresh_qtx_field( field ) {
+	var qtx = typeof qTranx !== 'undefined' ? qTranx?.hooks : ( typeof qTranslateConfig !== 'undefined' ? qTranslateConfig?.js.get_qtx?.() : null );
+	if( ! qtx ) { return; }
+	
+	$j( field ).removeClass( 'qtranxs-translatable' );
+	var h = qtx.refreshContentHook( field );
+	$j( field ).addClass( 'qtranxs-translatable' );
+
+	// Refresh tinyMCE (from "qtranslate-xt\admin\js\common.js" updateTinyMCE line 588)
+	if( typeof tinyMCE !== 'undefined' ) {
+		if( tinyMCE && $j( '#' + field.id ).hasClass( 'wp-editor-area' ) ) {
+			if( tinyMCE.get( field.id ) ) {
+				h.mce = tinyMCE.get( field.id );
+				h.mce.setContent( h.contentField.value, { format: 'html' } );
 			}
 		}
 	}
