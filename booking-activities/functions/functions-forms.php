@@ -640,7 +640,7 @@ function bookacti_get_default_form_fields_data( $field_name = '', $context = 'vi
  * Get fields metadata
  * @see bookacti_format_form_field_data to properly format your array
  * @since 1.5.0
- * @version 1.17.0
+ * @version 1.18.9
  * @param string $field_name
  * @param string $context 'view' or 'edit'
  * @return array
@@ -715,7 +715,6 @@ function bookacti_get_default_form_fields_meta( $field_name = '', $context = 'vi
 			'generate_password'      => 0,
 			'remember'               => 0,
 			'send_new_account_email' => 1,
-			'new_user_role'          => 'default',
 			'displayed_fields'       => array_merge( $log_in_defaults[ 'displayed' ], $login_type_defaults[ 'displayed' ], $register_defaults[ 'displayed' ] ),
 			'required_fields'        => array_merge( $log_in_defaults[ 'required' ], $login_type_defaults[ 'required' ], $register_defaults[ 'required' ] )
 		),
@@ -774,7 +773,7 @@ function bookacti_get_available_hide_calendar_options() {
 /**
  * Format field data according to its type
  * @since 1.5.0
- * @version 1.17.0
+ * @version 1.18.9
  * @param array|string $raw_field_data
  * @param $context "view" or "edit"
  * @return array
@@ -854,7 +853,6 @@ function bookacti_format_form_field_data( $raw_field_data, $context = 'view' ) {
 		$keys_by_type = array( 
 			'bool'   => array( 'automatic_login', 'generate_password', 'send_new_account_email', 'login_first', 'login_button', 'remember' ),
 			'int'    => array( 'min_password_strength' ),
-			'str_id' => array( 'new_user_role' ),
 			'str'    => array( 'login_button_label', 'register_button_label' )
 		);
 		$field_meta = bookacti_sanitize_values( $default_meta, $raw_field_data, $keys_by_type );
@@ -984,7 +982,7 @@ function bookacti_format_form_field_data( $raw_field_data, $context = 'view' ) {
 /**
  * Sanitize field data according to its type
  * @since 1.5.0
- * @version 1.18.5
+ * @version 1.18.9
  * @param array|string $raw_field_data
  * @return array
  */
@@ -1009,7 +1007,8 @@ function bookacti_sanitize_form_field_data( $raw_field_data ) {
 		}
 		
 		$field_meta[ 'id' ]    = isset( $raw_field_data[ 'id' ] ) && $raw_field_data[ 'id' ] !== '' ? sanitize_title_with_dashes( $raw_field_data[ 'id' ] ) : $default_meta[ 'id' ];
-		$field_meta[ 'class' ] = isset( $raw_field_data[ 'class' ] ) && is_string( $raw_field_data[ 'class' ] ) && ! is_serialized( $raw_field_data[ 'class' ] ) && $raw_field_data[ 'class' ] !== '' ? sanitize_text_field( $raw_field_data[ 'class' ] ) : $default_meta[ 'class' ];
+		$field_meta[ 'class' ] = isset( $raw_field_data[ 'class' ] ) && is_string( $raw_field_data[ 'class' ] ) && $raw_field_data[ 'class' ] !== '' ? sanitize_text_field( stripslashes( $raw_field_data[ 'class' ] ) ) : $default_meta[ 'class' ];
+		if( is_serialized( $field_meta[ 'class' ] ) ) { $field_meta[ 'class' ] = ''; }
 		
 		$field_meta[ 'method' ]            = isset( $raw_field_data[ 'method' ] ) && in_array( $raw_field_data[ 'method' ], array_keys( bookacti_get_available_booking_methods() ), true ) ? $raw_field_data[ 'method' ] : $default_meta[ 'method' ];
 		$field_meta[ 'hide_availability' ] = isset( $raw_field_data[ 'hide_availability' ] ) && is_numeric( $raw_field_data[ 'hide_availability' ] ) ? max( min( intval( $raw_field_data[ 'hide_availability' ] ), 100 ), 0 ) : $default_meta[ 'hide_availability' ];
@@ -1076,7 +1075,6 @@ function bookacti_sanitize_form_field_data( $raw_field_data ) {
 		$keys_by_type = array( 
 			'bool'   => array( 'automatic_login', 'generate_password', 'send_new_account_email', 'login_first', 'login_button', 'remember' ),
 			'int'    => array( 'min_password_strength' ),
-			'str_id' => array( 'new_user_role' ),
 			'str'    => array( 'login_button_label', 'register_button_label' )
 		);
 		$field_meta = bookacti_sanitize_values( $default_meta, $raw_field_data, $keys_by_type );
@@ -1143,7 +1141,8 @@ function bookacti_sanitize_form_field_data( $raw_field_data ) {
 		if( isset( $raw_field_data[ 'label' ] ) ) { $field_data[ 'label' ] = bookacti_sanitize_form_field_free_text( $raw_field_data[ 'label' ] ); }
 		
 	} else if( $raw_field_data[ 'name' ] === 'submit' ) {
-		$field_data[ 'value' ] = isset( $raw_field_data[ 'value' ] ) && is_string( $raw_field_data[ 'value' ] ) && ! is_serialized( $raw_field_data[ 'value' ] ) ? sanitize_text_field( $raw_field_data[ 'value' ] ) : '';
+		$field_data[ 'value' ] = isset( $raw_field_data[ 'value' ] ) && is_string( $raw_field_data[ 'value' ] ) ? sanitize_text_field( stripslashes( $raw_field_data[ 'value' ] ) ) : '';
+		if( is_serialized( $field_data[ 'value' ] ) ) { $field_data[ 'value' ] = ''; }
 	
 	} else if( $raw_field_data[ 'name' ] === 'free_text' ) {
 		$field_data[ 'value' ] = isset( $raw_field_data[ 'value' ] ) ? bookacti_sanitize_form_field_free_text( $raw_field_data[ 'value' ] ) : '';
@@ -1182,7 +1181,7 @@ function bookacti_sanitize_form_field_data( $raw_field_data ) {
 /**
  * Sanitize the values entered by the user in the form fields
  * @since 1.5.0
- * @version 1.18.5
+ * @version 1.18.8
  * @param array $values
  * @param string $field_type
  * @return array
@@ -1196,9 +1195,11 @@ function bookacti_sanitize_form_field_values( $values, $field_type = '' ) {
 	// Login fields
 	if( $field_type === 'login' ) {
 		$sanitized_values[ 'email' ]             = ! empty( $values[ 'email' ] ) ? ( strpos( $values[ 'email' ], '@', 1 ) !== false ? sanitize_email( wp_unslash( $values[ 'email' ] ) ) : sanitize_user( wp_unslash( $values[ 'email' ] ) ) ) : '';
-		$sanitized_values[ 'password' ]          = ! empty( $values[ 'password' ] ) && is_string( $values[ 'password' ] ) && ! is_serialized( $values[ 'password' ] ) ? trim( sanitize_text_field( wp_unslash( $values[ 'password' ] ) ) ) : '';
+		$sanitized_values[ 'password' ]          = ! empty( $values[ 'password' ] ) && is_string( $values[ 'password' ] ) ? trim( sanitize_text_field( wp_unslash( $values[ 'password' ] ) ) ) : '';
 		$sanitized_values[ 'password_strength' ] = ! empty( $values[ 'password_strength' ] ) ? intval( $values[ 'password_strength' ] ) : 1;
 		$sanitized_values[ 'remember' ]          = ! empty( $values[ 'remember' ] ) ? 1 : 0;
+		
+		if( is_serialized( $sanitized_values[ 'password' ] ) ) { $sanitized_values[ 'password' ] = ''; }
 		
 		$login_types = bookacti_get_login_type_field_default_options( array(), 'edit' );
 		$sanitized_values[ 'login_type' ] = ! empty( $values[ 'login_type' ] ) && in_array( $values[ 'login_type' ], array_keys( $login_types ), true ) ? $values[ 'login_type' ] : '';
@@ -1423,7 +1424,7 @@ function bookacti_validate_registration( $login_values, $login_data ) {
 /**
  * Register a new user through a booking form
  * @since 1.5.0
- * @version 1.16.42
+ * @version 1.18.9
  * @param array $login_values
  * @param array $login_data
  * @return WP_User|false
@@ -1460,9 +1461,8 @@ function bookacti_register_a_new_user( $login_values, $login_data ) {
 			'user_email' => $login_values[ 'email' ],
 			'first_name' => ! empty( $login_values[ 'first_name' ] ) ? $login_values[ 'first_name' ] : '',
 			'last_name'  => ! empty( $login_values[ 'last_name' ] ) ? $login_values[ 'last_name' ] : '',
-			'role'       => $login_data[ 'new_user_role' ] === 'default' ? get_option( 'default_role' ) : $login_data[ 'new_user_role' ]
 		), $login_values );
-
+		
 		// Create the user
 		$user_id = wp_insert_user( $new_user_data );
 		if( is_wp_error( $user_id ) ) { 
